@@ -1,51 +1,28 @@
-// 공통 함수: 값 가져오기
-function getValue(id) {
-  return Number(document.getElementById(id)?.value || localStorage.getItem(id)) * 10000;
-}
+// 다크모드
+function initTheme() {
+  const toggle = document.getElementById("themeToggle");
+  const saved = localStorage.getItem("theme");
 
-// 공통 함수: 상태 판단
-function getStatus(rate) {
-  if (rate < 20) {
-    return {
-      text: "위험",
-      feedback: "지출이 많습니다. 줄이는 것이 필요합니다.",
-      color: "red"
-    };
-  } else if (rate < 40) {
-    return {
-      text: "보통",
-      feedback: "조금 더 저축하면 더 안정적입니다.",
-      color: "orange"
-    };
-  } else {
-    return {
-      text: "안정",
-      feedback: "매우 좋은 소비 습관입니다.",
-      color: "green"
-    };
+  if (saved === "dark") {
+    document.body.classList.add("dark");
+    toggle.checked = true;
   }
+
+  toggle.addEventListener("change", () => {
+    document.body.classList.toggle("dark");
+    localStorage.setItem("theme",
+      document.body.classList.contains("dark") ? "dark" : "light"
+    );
+  });
 }
 
-// 공통 함수: 결과 계산
-function calculateData(income, expense) {
-  const saving = income - expense;
-  const rate = (saving / income) * 100;
-
-  return {
-    year1: saving * 12,
-    year3: saving * 12 * 3,
-    year5: saving * 12 * 5,
-    rate
-  };
-}
-
-// 입력 → 결과 이동
+// 입력 → 결과
 function goResult() {
-  const income = document.getElementById("income").value;
-  const expense = document.getElementById("expense").value;
+  let income = Number(document.getElementById("income").value);
+  let expense = Number(document.getElementById("expense").value);
 
-  if (!income || !expense) {
-    alert("값을 입력하세요!");
+  if (!income || income <= 0 || expense < 0) {
+    alert("올바른 값을 입력하세요!");
     return;
   }
 
@@ -55,47 +32,58 @@ function goResult() {
   window.location.href = "result.html";
 }
 
-// 결과 페이지 실행
+// 결과 계산
 function loadResult() {
-  const income = getValue("income");
-  const expense = getValue("expense");
+  initTheme();
 
-  const data = calculateData(income, expense);
-  const status = getStatus(data.rate);
+  let income = Number(localStorage.getItem("income")) * 10000;
+  let expense = Number(localStorage.getItem("expense")) * 10000;
 
-  // 출력 함수
-  const setText = (id, text) => {
-    const el = document.getElementById(id);
-    if (el) el.innerText = text;
-  };
+  let saving = income - expense;
+  let rate = (saving / income) * 100;
 
-  setText("year1", `1년 후: ${data.year1.toLocaleString()}원`);
-  setText("year3", `3년 후: ${data.year3.toLocaleString()}원`);
-  setText("year5", `5년 후: ${data.year5.toLocaleString()}원`);
+  let year1 = saving * 12;
+  let year3 = saving * 12 * 3;
+  let year5 = saving * 12 * 5;
 
-  setText("status", `상태: ${status.text}`);
-  setText("feedback", status.feedback);
+  let status = rate < 20 ? "위험" : rate < 40 ? "보통" : "안정";
 
-  const statusEl = document.getElementById("status");
-  if (statusEl) statusEl.style.color = status.color;
+  let feedback =
+    status === "위험" ? "지출이 많습니다." :
+    status === "보통" ? "조금 더 저축하세요." :
+    "좋은 소비 습관입니다.";
+
+  let diff = year5 - year1;
+
+  document.getElementById("year1").innerText = `1년 후: ${year1.toLocaleString()}원`;
+  document.getElementById("year3").innerText = `3년 후: ${year3.toLocaleString()}원`;
+  document.getElementById("year5").innerText = `5년 후: ${year5.toLocaleString()}원`;
+
+  document.getElementById("status").innerText = `상태: ${status}`;
+  document.getElementById("feedback").innerText =
+    `${feedback} (저축률: ${rate.toFixed(1)}%, 5년-1년 차이: ${diff.toLocaleString()}원)`;
 
   // 그래프
-  const ctx = document.getElementById("myChart");
-  if (ctx) {
-    new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: ["1년", "3년", "5년"],
-        datasets: [{
-          label: "자산 증가 (원)",
-          data: [data.year1, data.year3, data.year5]
-        }]
-      }
-    });
-  }
+  new Chart(document.getElementById("myChart"), {
+    type: "bar",
+    data: {
+      labels: ["1년", "3년", "5년"],
+      datasets: [{
+        label: "자산",
+        data: [year1, year3, year5]
+      }]
+    }
+  });
 }
 
 // 뒤로가기
 function goBack() {
   window.location.href = "index.html";
 }
+
+// 초기 실행
+window.onload = () => {
+  if (document.getElementById("themeToggle")) {
+    initTheme();
+  }
+};

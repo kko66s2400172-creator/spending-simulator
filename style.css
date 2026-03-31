@@ -1,19 +1,77 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
+  transition: 0.3s;
   background: linear-gradient(135deg, #74ebd5, #9face6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
 }
 
-.container {
+/* 다크모드 */
+body.dark {
+  background: #121212;
+  color: white;
+}
+
+body.dark .container {
+  background: #1e1e1e;
+}
+
+body.dark .card {
+  background: #2a2a2a;
+}
+
+/* 토글 위치 */
+.theme-toggle {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+}
+
+/* 스위치 */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.switch input { display: none; }
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  background: #ccc;
+  border-radius: 24px;
+  width: 100%;
+  height: 100%;
+}
+
+.slider:before {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 3px;
+  top: 3px;
   background: white;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+input:checked + .slider {
+  background: #6c63ff;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+/* 기존 스타일 */
+.container {
+  margin: 80px auto;
   padding: 30px;
   border-radius: 15px;
   width: 380px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  background: white;
   text-align: center;
 }
 
@@ -22,26 +80,18 @@ body {
   text-align: left;
 }
 
-.input-group label {
-  font-weight: bold;
-}
-
 .input-row {
   display: flex;
   align-items: center;
-  margin-top: 5px;
 }
 
 .input-row input {
   flex: 1;
   padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
 }
 
 .input-row span {
   margin-left: 8px;
-  font-weight: bold;
 }
 
 button {
@@ -52,30 +102,17 @@ button {
   color: white;
   border: none;
   border-radius: 10px;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #574fd6;
 }
 
 .card {
-  background: #f1f3f5;
-  padding: 15px;
   margin-top: 15px;
+  padding: 15px;
   border-radius: 10px;
+  background: #f1f3f5;
   text-align: left;
+  transition: 0.2s;
 }
 
-.card h2 {
-  margin-bottom: 10px;
-}
-
-#status {
-  font-weight: bold;
-}
-
-/* 그래프 크기 */
-canvas {
-  margin-top: 10px;
+.card:hover {
+  transform: translateY(-3px);
 }
