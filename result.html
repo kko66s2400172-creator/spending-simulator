@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>결과</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body onload="loadResult()">
+
+  <div class="container">
+    <h1>분석 결과</h1>
+
+    <!-- 자산 변화 -->
+    <div class="card">
+      <h2>자산 변화</h2>
+      <p id="year1"></p>
+      <p id="year3"></p>
+      <p id="year5"></p>
+    </div>
+
+    <!-- 그래프 -->
+    <div class="card">
+      <h2>자산 증가 그래프</h2>
+      <canvas id="myChart"></canvas>
+    </div>
+
+    <!-- 소비 분석 -->
+    <div class="card">
+      <h2>소비 분석</h2>
+      <p id="status"></p>
+      <p id="feedback"></p>
+    </div>
+
+    <button onclick="goBack()">다시 입력하기</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
